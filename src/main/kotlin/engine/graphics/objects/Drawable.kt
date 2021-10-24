@@ -7,4 +7,5 @@ interface Drawable {
     fun draw(context: CanvasRenderingContext2D)
     fun getLayer(): Int
     fun setOrigin(vector: Vector2)
+    fun getOrigin(): Vector2
 }

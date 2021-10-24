@@ -2,6 +2,7 @@ package engine.graphics
 
 import engine.EngineConfiguration
 import engine.common.Vector2
+import engine.graphics.Color.Companion.BLACK
 import engine.graphics.objects.Drawable
 import engine.physics.PhysicalObject
 import kotlinx.browser.document
@@ -132,6 +133,8 @@ class Painter {
             canvas.height * 1.0
         )
         context.restore();
+        context.fillStyle = BLACK.toRgba()
+        context.fillRect(0.0, 0.0, canvas.width.toDouble(), canvas.height.toDouble())
     }
 
     companion object {

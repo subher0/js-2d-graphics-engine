@@ -52,7 +52,6 @@ class SceneManager private constructor(private var painter: Painter){
             delay(max(EngineConfiguration.getInstance().millisPerFrame() - timeTakenMs, 0))
             timePassedBetweenFramesMillis = calculateAdvancementTime((Date().getTime() - start.getTime()).toInt())
             millisAdvanced += timePassedBetweenFramesMillis
-            console.log(millisAdvanced)
         }
     }
 
