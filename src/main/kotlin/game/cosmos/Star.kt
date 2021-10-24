@@ -57,7 +57,7 @@ class Star(
             val tailEndY = origin.getY() - representation.getRadius() * speed.getY() * tailLength
             val gradient = context.createLinearGradient(origin.getX(), origin.getY(), tailEndX, tailEndY)
             gradient.addColorStop(0.0, representation.color.toRgba())
-            gradient.addColorStop(1.0, representation.color.change(alpha = 0.5f).toRgba())
+            gradient.addColorStop(1.0, representation.color.change(alpha = 0.0f).toRgba())
             context.fillStyle = gradient
             context.beginPath()
             context.moveTo(origin.getX(), origin.getY() - representation.getRadius())
