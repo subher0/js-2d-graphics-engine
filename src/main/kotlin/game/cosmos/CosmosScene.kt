@@ -12,11 +12,14 @@ import kotlin.math.*
 
 class CosmosScene : PhysicalScene2D<VisibleObject<out Drawable>>() {
     private val drawables = ArrayList<VisibleObject<out Drawable>>()
-    private val spawnRadius = 15.0
+    private val spawnRadius = 5.0
     private val sprinkleSpeed = 0.05
     private val numberOfNozzles = 100
-    private val speedFactor = 20.0
+    private var speedFactorMax = 1.5
+    private var speedFactorMin = 1.0
+    private var speedGrowthFactor = -0.3
 
+    private var speedFactor = speedFactorMin
     private var sprinklePosition = 0.0
     private var currentNozzle = 0
 
@@ -30,6 +33,7 @@ class CosmosScene : PhysicalScene2D<VisibleObject<out Drawable>>() {
             if (keyboardEvent.code == "Enter") {
                 console.log(keyboardEvent)
                 tailLengthGrowthFactor = -tailLengthGrowthFactor
+                speedGrowthFactor = -speedGrowthFactor
             }
         })
     }
@@ -39,15 +43,20 @@ class CosmosScene : PhysicalScene2D<VisibleObject<out Drawable>>() {
     }
 
     override fun doAdvance(milliseconds: Int) {
-        tailLength = max(min(2.0, tailLength + tailLengthGrowthFactor), 0.0)
+        console.log(drawables.size)
+        tailLength = max(min(1.0, tailLength + tailLengthGrowthFactor), 0.0)
+        speedFactor = max(min(speedFactorMax, speedFactor + speedGrowthFactor), speedFactorMin)
         sprinklePosition += sprinkleSpeed
-        for (i in 0..4) {
-            val radius = (1..6).random().toDouble()
+        val ballsGenerated = (milliseconds / 5.0 * speedFactor / speedFactorMin).toInt()
+        for (i in 0..ballsGenerated) {
+            var radius = (1000..3000).random() / 1000.0
+            if ((0..15).random() == 0)
+               radius *= (3000..30000).random() / 1000.0
             val originAngle = randomAngle()
             val originX = spawnRadius * cos(originAngle) + EngineConfiguration.getInstance().center().getX()
             val originY = spawnRadius * sin(originAngle) + EngineConfiguration.getInstance().center().getY()
-            val speedX = cos(originAngle) * speedFactor * radius
-            val speedY = sin(originAngle) * speedFactor * radius
+            val speedX = cos(originAngle) * min(radius * radius, 300.0)
+            val speedY = sin(originAngle) * min(radius * radius, 300.0)
             drawables.add(
                 Star(
                     Vector2(originX, originY),
@@ -67,7 +76,7 @@ class CosmosScene : PhysicalScene2D<VisibleObject<out Drawable>>() {
 
     private fun nextNozzleAngle(): Double {
         currentNozzle = ((currentNozzle + 1) % numberOfNozzles)
-        return currentNozzle.toDouble() / numberOfNozzles * 2 * PI  + sprinklePosition
+        return currentNozzle.toDouble() / numberOfNozzles * 2 * PI + sprinklePosition
     }
 
     private fun cleanUp() {
@@ -75,9 +84,20 @@ class CosmosScene : PhysicalScene2D<VisibleObject<out Drawable>>() {
             var drawable = drawables.get(i)
             if (drawable is Star) {
                 drawable.setTailLength(tailLength)
+                drawable.multiplySpeed(speedFactor)
+                drawable.multiplySpeed(
+                    min(max(max(
+                        abs(
+                            drawable.getOrigin().getX() - EngineConfiguration.getInstance().center().getX()
+                        ),
+                        abs(
+                            drawable.getOrigin().getY() - EngineConfiguration.getInstance().center().getY()
+                        )
+                    ) * 0.1, 1.0), 10.0))
             }
-            if (drawable.getOrigin().getX() < -1000 || drawable.getOrigin().getX() > 3000
-                || drawable.getOrigin().getY() < -1000 || drawable.getOrigin().getY() > 3000) {
+            if (drawable.getOrigin().getX() < -200 || drawable.getOrigin().getX() > 3000
+                || drawable.getOrigin().getY() < -200 || drawable.getOrigin().getY() > 2000
+            ) {
                 drawables.removeAt(i)
             }
         }

@@ -23,6 +23,7 @@ class Star(
     origin, speed,
     Circle(origin, radius, color = color)
 ) {
+    private val originalSpeed = speed.copy()
     private val originalRadius = representation.getRadius()
     private var numberOfDraws = 0
 
@@ -52,12 +53,12 @@ class Star(
             )
         )
         super.draw(context)
-        if (tailLength > 0.0) {
-            val tailEndX = origin.getX() - representation.getRadius() * speed.getX() * tailLength
-            val tailEndY = origin.getY() - representation.getRadius() * speed.getY() * tailLength
+        if (tailLength > 0.0 && representation.getRadius() < 5.0) {
+            val tailEndX = origin.getX() - min(representation.getRadius() * speed.getX() * tailLength, 10.0)
+            val tailEndY = origin.getY() - min(representation.getRadius() * speed.getY() * tailLength, 10.0)
             val gradient = context.createLinearGradient(origin.getX(), origin.getY(), tailEndX, tailEndY)
             gradient.addColorStop(0.0, representation.color.toRgba())
-            gradient.addColorStop(1.0, representation.color.change(alpha = 0.0f).toRgba())
+            gradient.addColorStop(1.0, representation.color.change(alpha = 0.3f).toRgba())
             context.fillStyle = gradient
             context.beginPath()
             context.moveTo(origin.getX(), origin.getY() - representation.getRadius())
@@ -71,5 +72,12 @@ class Star(
 
     fun setTailLength(tailLength: Double) {
         this.tailLength = tailLength
+    }
+
+    fun multiplySpeed(times: Double) {
+        var newSpeed = this.originalSpeed.copy()
+        newSpeed.scale(times)
+        this.speed = newSpeed
+
     }
 }
