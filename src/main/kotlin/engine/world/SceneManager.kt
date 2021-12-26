@@ -72,7 +72,9 @@ class SceneManager {
     private fun calculateAdvancementTime(actualTime: Int): Int {
         if (EngineConfiguration.getInstance().simulationMode() == EngineConfiguration.SimulationMode.PRECISION) {
             return EngineConfiguration.getInstance().millisPerFrame()
-        } else if (EngineConfiguration.getInstance().simulationMode() == EngineConfiguration.SimulationMode.BEST_EFFORT) {
+        } else if (EngineConfiguration.getInstance()
+                .simulationMode() == EngineConfiguration.SimulationMode.BEST_EFFORT
+        ) {
             return actualTime
         }
         throw RuntimeException("Unknown simulation mode " + EngineConfiguration.getInstance().simulationMode())

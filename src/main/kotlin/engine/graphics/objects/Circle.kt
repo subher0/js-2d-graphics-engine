@@ -8,9 +8,9 @@ import kotlin.math.PI
 
 class Circle(
     private var origin: Vector2,
-    private val radius: Double,
+    private var radius: Double,
     private var layer: Int = 0,
-    private var color: Color = BLACK,
+    var color: Color = BLACK,
 ) : AbstractDrawable(layer, origin) {
 
     override fun draw(context: CanvasRenderingContext2D) {
@@ -22,4 +22,12 @@ class Circle(
     }
 
     fun getRadius() = radius
+
+    fun setRadius(radius: Double) {
+        this.radius = radius
+    }
+
+    override fun getOrigin(): Vector2 {
+        return origin
+    }
 }

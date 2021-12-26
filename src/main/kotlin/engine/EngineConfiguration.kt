@@ -1,5 +1,7 @@
 package engine
 
+import engine.common.Vector2
+
 class EngineConfiguration() {
     fun drawBoundingBoxes() = false
 
@@ -10,6 +12,8 @@ class EngineConfiguration() {
     fun simulationMode() = SimulationMode.BEST_EFFORT
 
     fun useDoubleBuffering() = false
+
+    fun center() = Vector2(1300.0, 650.0)
 
     companion object {
         private val engineConfiguration = EngineConfiguration()
